@@ -1,0 +1,34 @@
+version: "3"
+services:
+  pihole:
+    image: diginc/pi-hole:alpine
+    environment:
+      ServerIP: ${SERVER_IP}
+      WEBPASSWORD: "${WEBPASSWORD}"
+      IPv6: "False"
+      VIRTUAL_HOST: "${VIRTUAL_HOST}"
+    volumes:
+      - "./pihole/:/etc/pihole/"
+      - "./dnsmasq.d/:/etc/dnsmasq.d/"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "88:80/tcp"
+    restart: always
+  
+  openvpn:
+    image: kylemanna/openvpn
+    volumes:
+       - "./etc/openvpn:/etc/openvpn"
+    ports:
+      - "1194:1194/udp"
+    privileged: true
+    restart: always
+
+#  www:
+#    image:  pierrezemb/gostatic
+#    volumes:
+#      - "./user-config:/srv/http" 
+#    ports:
+#      - "801:8043/tcp"
+#    restart: always
